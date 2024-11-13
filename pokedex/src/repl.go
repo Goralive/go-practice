@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	// "strings"
+	"strings"
 )
 
 type cliCommand struct {
@@ -28,18 +28,35 @@ func getCommands() map[string]cliCommand {
 	}
 }
 
+func cleanInput(text string) []string {
+	output := strings.ToLower(text)
+	words := strings.Fields(output)
+	return words
+}
+
 func startRepl() {
-	scaner := bufio.NewScanner(os.Stdin)
+	reader := bufio.NewScanner(os.Stdin)
 	for {
-		if scaner.Scan() != false {
-			userInput := scaner.Text()
-			fmt.Printf("Pokedex -> %s\n", userInput)
-			menuItem, exists := getCommands()[userInput]
-			if exists {
-				if err := menuItem.callback(); err != nil {
-					fmt.Errorf("Something go wrong %v\n", err)
-				}
+		fmt.Print("Pokedex > ")
+		reader.Scan()
+
+		words := cleanInput(reader.Text())
+		if len(words) == 0 {
+			continue
+		}
+
+		commandName := words[0]
+
+		command, exists := getCommands()[commandName]
+		if exists {
+			err := command.callback()
+			if err != nil {
+				fmt.Println(err)
 			}
+			continue
+		} else {
+			fmt.Println("Unknown command")
+			continue
 		}
 	}
 }

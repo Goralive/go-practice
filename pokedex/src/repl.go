@@ -4,13 +4,20 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	// "strings"
+	"pokedex/pokeapi"
+	"strings"
 )
+
+type config struct {
+	pokeapiClient   pokeapi.Client
+	nextLocationUrl *string
+	prevLocationUrl *string
+}
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -20,6 +27,16 @@ func getCommands() map[string]cliCommand {
 			description: "Displays a help message",
 			callback:    commandHelp,
 		},
+		"map": {
+			name:        "map",
+			description: "Get the next page",
+			callback:    commandMapf,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Get the previous page",
+			callback:    commandMapb,
+		},
 		"exit": {
 			name:        "exit",
 			description: "Exit the Pokedex",
@@ -28,18 +45,35 @@ func getCommands() map[string]cliCommand {
 	}
 }
 
-func startRepl() {
-	scaner := bufio.NewScanner(os.Stdin)
+func cleanInput(text string) []string {
+	output := strings.ToLower(text)
+	words := strings.Fields(output)
+	return words
+}
+
+func startRepl(cfg *config) {
+	reader := bufio.NewScanner(os.Stdin)
 	for {
-		if scaner.Scan() != false {
-			userInput := scaner.Text()
-			fmt.Printf("Pokedex -> %s\n", userInput)
-			menuItem, exists := getCommands()[userInput]
-			if exists {
-				if err := menuItem.callback(); err != nil {
-					fmt.Errorf("Something go wrong %v\n", err)
-				}
+		fmt.Print("Pokedex > ")
+		reader.Scan()
+
+		words := cleanInput(reader.Text())
+		if len(words) == 0 {
+			continue
+		}
+
+		commandName := words[0]
+
+		command, exists := getCommands()[commandName]
+		if exists {
+			err := command.callback(cfg)
+			if err != nil {
+				fmt.Println(err)
 			}
+			continue
+		} else {
+			fmt.Println("Unknown command")
+			continue
 		}
 	}
 }

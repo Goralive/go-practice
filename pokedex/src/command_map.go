@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
-
 	"errors"
+	"fmt"
 )
 
 func commandMapf(cfg *config) error {

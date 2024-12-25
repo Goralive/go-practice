@@ -18,7 +18,7 @@ func commandMapf(cfg *config, args ...string) error {
 	return nil
 }
 
-func commandMapb(cfg *config) error {
+func commandMapb(cfg *config, args ...string) error {
 	if cfg.prevLocationUrl == nil {
 		return errors.New("you're on the first page")
 	}

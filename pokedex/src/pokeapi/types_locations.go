@@ -124,3 +124,4 @@ type Pokemon struct {
 		} `json:"version_group_details"`
 	} `json:"moves"`
 }
+

@@ -8,7 +8,7 @@ import (
 )
 
 func (client *Client) ListLocations(pageUrl *string) (Locations, error) {
-	url := baseURL + "/location-area"
+	url := baseUrl + "/location-area"
 	if pageUrl != nil {
 		url = *pageUrl
 	}
@@ -22,6 +22,7 @@ func (client *Client) ListLocations(pageUrl *string) (Locations, error) {
 
 		return locationsResp, nil
 	}
+
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -43,7 +44,7 @@ func (client *Client) ListLocations(pageUrl *string) (Locations, error) {
 	if err = json.Unmarshal(data, &locations); err != nil {
 		return Locations{}, err
 	}
-
 	client.cache.Add(url, data)
+
 	return locations, nil
 }

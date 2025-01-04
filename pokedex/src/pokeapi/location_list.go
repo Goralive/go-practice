@@ -8,7 +8,7 @@ import (
 )
 
 func (client *Client) ListLocations(pageUrl *string) (Locations, error) {
-	url := baseUrl + "/location-area"
+	url := baseURL + "/location-area"
 	if pageUrl != nil {
 		url = *pageUrl
 	}
@@ -22,7 +22,6 @@ func (client *Client) ListLocations(pageUrl *string) (Locations, error) {
 
 		return locationsResp, nil
 	}
-
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

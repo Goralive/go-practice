@@ -37,6 +37,11 @@ func getCommands() map[string]cliCommand {
 			description: "Get the previous page",
 			callback:    commandMapb,
 		},
+		"catch": {
+			name:        "catch <pokemon_name>",
+			description: "Catch a pokemon",
+			callback:    commandCatch,
+		},
 		"explore": {
 			name:        "explore <location_name>",
 			description: "Explore a location",
